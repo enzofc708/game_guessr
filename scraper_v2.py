@@ -6,7 +6,7 @@ import asyncio
 
 GAMEDLE_URL         = "https://www.gamedle.wtf/giveItATryWritten" #"https://webhook.site/5239c4ad-1547-4c10-bcb6-87797b1facda"
 GAMEDLE_POST_HEADER = {"content-type": "application/json"}
-GAMEDLE_POST_BODY   = json.loads("{\"gameStatus\":\"IN_PROGRESS\",\"attemps\":[{\"value\":\"\",\"label\":\"\"}],\"original\":{\"value\":482,\"label\":null,\"platforms\":[],\"genres\":[],\"collection\":63,\"releaseYear\":null,\"tokens\":null,\"involved_companies\":[],\"game_engines\":[],\"game_modes\":[],\"player_perspectives\":[],\"s3_id\":null,\"s3_artwork_id\":null,\"summary\":null,\"themes\":[],\"franchises\":[554],\"collectionFranchisesCoincidence\":null,\"collectionFranchisesCoincidenceNames\":null,\"ytlink\":null,\"steamlink\":null,\"platformsCoincidence\":0,\"genresCoincidence\":0,\"collectionCoincidence\":false,\"releaseYearCoincidence\":0,\"involved_companiesCoincidence\":0,\"game_enginesCoincidence\":0,\"game_modesCoincidence\":0,\"player_perspectiveCoincidence\":0,\"themesCoincidence\":0},\"originalWritten\":null,\"statistics\":{\"current_streaks\":0,\"played\":0,\"max_streaks\":0,\"current_attemps_number\":0,\"dayid\":null},\"settings\":{\"startYear\":null,\"endYear\":null,\"sportsIncluded\":false,\"indieIncluded\":false,\"racingIncluded\":false,\"shooterIncluded\":false,\"actionShowed\":true,\"adventureShowed\":true,\"extendWritten\":false,\"extendUnlimited\":false,\"level\":0},\"usedClue\":false,\"dayid\":null}")
+GAMEDLE_POST_BODY   = json.loads("{\"gameStatus\":\"IN_PROGRESS\",\"attemps\":[{\"value\":\"\",\"label\":\"\"}],\"original\":{\"value\":1876,\"label\":null,\"platforms\":[],\"genres\":[],\"collection\":352,\"releaseYear\":null,\"tokens\":null,\"involved_companies\":[],\"game_engines\":[],\"game_modes\":[],\"player_perspectives\":[],\"s3_id\":null,\"s3_artwork_id\":null,\"summary\":null,\"themes\":[],\"franchises\":[554],\"collectionFranchisesCoincidence\":null,\"collectionFranchisesCoincidenceNames\":null,\"ytlink\":null,\"steamlink\":null,\"platformsCoincidence\":0,\"genresCoincidence\":0,\"collectionCoincidence\":false,\"releaseYearCoincidence\":0,\"involved_companiesCoincidence\":0,\"game_enginesCoincidence\":0,\"game_modesCoincidence\":0,\"player_perspectiveCoincidence\":0,\"themesCoincidence\":0},\"originalWritten\":null,\"statistics\":{\"current_streaks\":0,\"played\":0,\"max_streaks\":0,\"current_attemps_number\":0,\"dayid\":null},\"settings\":{\"startYear\":null,\"endYear\":null,\"sportsIncluded\":false,\"indieIncluded\":false,\"racingIncluded\":false,\"shooterIncluded\":false,\"actionShowed\":true,\"adventureShowed\":true,\"extendWritten\":false,\"extendUnlimited\":false,\"level\":0},\"usedClue\":false,\"dayid\":null}")
 CPU_COUNT           = 12
 
 
@@ -23,7 +23,7 @@ async def extractData(target, gameId):
         "modes": target["game_modes"],
         "perspectives": target["player_perspectives"],
         "themes": list(map(lambda x: x["id"], target["themes"])),
-        "franchises": target["franchises"]
+        "franchises": [] if target["franchises"] is None else target["franchises"]
     }
     
     return pd.DataFrame([gameData])
@@ -60,7 +60,7 @@ async def main():
     await session.close()
 
     gameData = pd.concat(gameDataList)
-    gameList = gameList.merge(gameData, left_on="value", right_on="value").drop(columns=["value"])
+    gameList = gameList.merge(gameData, left_on="value", right_on="value")
 
     
 
